@@ -14,7 +14,7 @@ This will enable the free repo. To enable the nonfree repo:
 
 ```puppet
 class {'rpmfusion':
-	nonfree => true,
+	nonfree => 1,
 }
 ```
 
