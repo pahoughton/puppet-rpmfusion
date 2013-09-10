@@ -1,4 +1,5 @@
 class rpmfusion(
+    $free    = 1,
     $nonfree = 0
 ) {
     # RPMFusion requires EPEL to be installed
@@ -6,7 +7,7 @@ class rpmfusion(
 
     yumrepo { 'rpmfusion':
         mirrorlist  => "http://mirrors.rpmfusion.org/mirrorlist?repo=free-el-updates-released-${::os_maj_version}&arch=${::architecture}",
-        enabled     => 1,
+        enabled     => $free,
         gpgcheck    => 1,
         gpgkey      => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-el-6',
         descr       => 'RPM Fusion for EL 6 - Free - Updates'
