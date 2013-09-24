@@ -1,4 +1,9 @@
 class rpmfusion::params {
+  $source_repos =
+    [ 'source', 'updates-released-source', 'updates-testing-source' ]
+  $repos =
+    [ '-', 'debug', 'updates-released', 'updates-released-debug',
+      'updates-testing', 'updates-testing-debug', $source_repos ]
   if $::osfamily == 'RedHat' {
     case $::operatingsystem {
       'Fedora': {

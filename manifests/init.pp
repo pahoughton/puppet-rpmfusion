@@ -1,7 +1,8 @@
 class rpmfusion (
-  $free    = 1,
-  $nonfree = 0,
-  $with_version = true
+  $free         = 1,
+  $nonfree      = 0,
+  $with_version = true,
+  $repos        = ['updates-released']
   ) {
     # RPMFusion requires EPEL to be installed
     include epel
@@ -9,23 +10,10 @@ class rpmfusion (
 
     $gpg_path = '/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion'
     $gpg_module = 'puppet:///modules/rpmfusion/RPM-GPG-KEY-rpmfusion'
-    $mirrors = "http://mirrors.rpmfusion.org/mirrorlist?arch=${::architecture}"
-    $release_path = "${params::type}-updates-released-${params::version}"
 
-    yumrepo { 'rpmfusion':
-      mirrorlist => "${mirrors}&repo=free-${release_path}",
-      enabled    => $free,
-      gpgcheck   => 1,
-      gpgkey     => "file://${gpg_path}-free-${params::type}-${params::version}",
-      descr      => 'RPM Fusion for EL 6 - Free - Updates'
-    }
-
-    yumrepo { 'rpmfusion-nonfree':
-      mirrorlist => "${mirrors}&repo=nonfree-${release_path}",
-      enabled    => $nonfree,
-      gpgcheck   => 1,
-      gpgkey     => "file://${gpg_path}-nonfree-${params::type}-${params::version}",
-      descr      => 'RPM Fusion for EL 6 - Nonfree - Updates'
+    rpmfusion::repo { $repos:
+      free    => $free,
+      nonfree => $nonfree,
     }
 
     file { "${gpg_path}-free-${params::type}-${params::version}":
