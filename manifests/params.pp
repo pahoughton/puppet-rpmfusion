@@ -33,7 +33,7 @@ class rpmfusion::params {
   if $::osfamily == 'RedHat' {
     case $::operatingsystem {
       'Fedora': {
-        $supported_gpg = ['',11,12,13,14,15,16,17,18,19,21]
+        $supported_gpg = ['',11,12,13,14,15,16,17,18,19]
         $type = 'fedora'
         if $rpmfusion::with_version == true {
           $version = $::operatingsystemrelease
