@@ -26,9 +26,9 @@
 #
 class rpmfusion::params {
   $source_repos =
-    [ 'source', 'updates-released-source', 'updates-testing-source' ]
+    [ 'updates-released-source', 'updates-testing-source' ]
   $repos =
-    [ '-', 'debug', 'updates-released', 'updates-released-debug',
+    [ '-', 'debug', 'source', 'updates-released', 'updates-released-debug',
       'updates-testing', 'updates-testing-debug', $source_repos ]
   if $::osfamily == 'RedHat' {
     case $::operatingsystem {

@@ -54,7 +54,7 @@ class rpmfusion (
   $free         = 1,
   $nonfree      = 0,
   $with_version = true,
-  $repos        = [ 'updates-released' ]
+  $repos        = [ '-','updates-released' ],
   ) {
     # RPMFusion requires EPEL to be installed
     include epel
@@ -67,7 +67,7 @@ class rpmfusion (
       free    => $free,
       nonfree => $nonfree,
     }
-
+      
     file { "${gpg_path}-free-${params::type}-${params::version}":
       ensure => present,
       owner  => 'root',

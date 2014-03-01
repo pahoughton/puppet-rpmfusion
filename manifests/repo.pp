@@ -65,12 +65,15 @@ define rpmfusion::repo (
       '-'     => '',
       default => "${repo}-"
     }
-
+    $repo_name = $repo ? {
+      '-'     => '',
+      default => "-${repo}",
+    }
     $gpg_path = '/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion'
     $mirrors = "http://mirrors.rpmfusion.org/mirrorlist?arch=${architecture}"
     $release_path = "${params::type}-${repository}${params::version}"
 
-    yumrepo { "rpmfusion-${repo}":
+    yumrepo { "rpmfusion-free${repo_name}":
       mirrorlist => "${mirrors}&repo=free-${release_path}",
       enabled    => $free,
       gpgcheck   => 1,
@@ -78,7 +81,7 @@ define rpmfusion::repo (
       descr      => "RPM Fusion for EL 6 - Free - ${repo}"
     }
 
-    yumrepo { "rpmfusion-nonfree-${repo}":
+    yumrepo { "rpmfusion-nonfree${repo_name}":
       mirrorlist => "${mirrors}&repo=nonfree-${release_path}",
       enabled    => $nonfree,
       gpgcheck   => 1,
