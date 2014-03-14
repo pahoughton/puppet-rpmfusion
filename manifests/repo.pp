@@ -46,46 +46,27 @@
 #
 define rpmfusion::repo (
   $repo         = $name,
-  $free         = 1,
-  $nonfree      = 0,
+  $type,
+  $version,
   $architecture = $::architecture
   ) {
-    include rpmfusion::params
 
-    if $repo in $params::repos {
-      if $repo in $params::source_repos {
-        if $architecture != 'source' {
-          fail ("Repository type '${repo}' only available for arch source")
-        }
-      }
-    } else {
-      fail ("Repository type '${repo}' not supported")
-    }
-    $repository = $repo ? {
-      '-'     => '',
-      default => "${repo}-"
-    }
-    $repo_name = $repo ? {
-      '-'     => '',
-      default => "-${repo}",
-    }
-    $gpg_path = '/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion'
-    $mirrors = "http://mirrors.rpmfusion.org/mirrorlist?arch=${architecture}"
-    $release_path = "${params::type}-${repository}${params::version}"
+  $repo_id = "${repo}-${type}-${version}"
+  
+  if "nonfree" in $repo {
+    $gpg_path = "/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-nonfree-${type}-${ver}"
+  } else {
+    $gpg_path = "/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-${type}-${ver}"
+  }
 
-    yumrepo { "rpmfusion-free${repo_name}":
-      mirrorlist => "${mirrors}&repo=free-${release_path}",
-      enabled    => $free,
-      gpgcheck   => 1,
-      gpgkey     => "file://${gpg_path}-free-${params::type}-${params::version}",
-      descr      => "RPM Fusion for EL 6 - Free - ${repo}"
-    }
+  $mirrors = "http://mirrors.rpmfusion.org/mirrorlist?arch=${architecture}"
 
-    yumrepo { "rpmfusion-nonfree${repo_name}":
-      mirrorlist => "${mirrors}&repo=nonfree-${release_path}",
-      enabled    => $nonfree,
-      gpgcheck   => 1,
-      gpgkey     => "file://${gpg_path}-nonfree-${params::type}-${params::version}",
-      descr      => "RPM Fusion for EL 6 - Nonfree - ${repo}"
-    }
+  yumrepo { "rpmfusion-${repo}":
+    mirrorlist => "${mirrors}&repo=${repo_id}",
+    enabled    => 1,
+    gpgcheck   => 1,
+    gpgkey     => "file://${gpg_path}",
+    descr      => "RPM Fusion repo ${repo_id}",
+  }
+  
 }

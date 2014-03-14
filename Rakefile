@@ -8,6 +8,11 @@ end
 
 desc "Unit tests"
 RSpec::Core::RakeTask.new(:unittest) do |t|
-#  t.rspec_opts = ['--format=d']
+  t.rspec_opts = ['--format=d']
+  t.pattern = 'spec/unit/**/*_spec.rb'
+end
+
+desc "Unit tests w/o doc"
+RSpec::Core::RakeTask.new(:unittest_nodoc) do |t|
   t.pattern = 'spec/unit/**/*_spec.rb'
 end

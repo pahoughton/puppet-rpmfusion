@@ -4,27 +4,31 @@
 #
 require 'spec_helper'
 
-$os_family = {
-  'Fedora' => 'RedHat',
-  'CentOS' => 'RedHat',
-}
-$os_release = {
-  'Fedora' => '20',
-  'CentOS' => '6',
-}
-
-['Fedora','CentOS'].each { |os|
+[11,19,21].each { |frel|
+  os='Fedora'
   describe 'rpmfusion', :type => :class do
     let(:facts) do {
-        :osfamily               => $os_family[os],
+        :osfamily               => 'RedHat',
         :operatingsystem        => os,
-        :operatingsystemrelease => $os_release[os],
-        :os_maj_version         => $os_release[os],
+        :operatingsystemrelease => frel,
+        :os_maj_version         => frel,
     } end 
-    context "supports operating system: #{os}" do
-      context "default params" do
-        it { should contain_class('rpmfusion') }
-      end
+    context "supports operating system: #{os} rel #{frel}" do
+      it { should contain_class('rpmfusion') }
+    end
+  end
+}
+# Other RedHat systems 6
+['CentOS'].each { |os|
+  rrel=6
+  describe 'rpmfusion', :type => :class do
+    let(:facts) do {
+        :osfamily               => 'RedHat',
+        :operatingsystem        => os,
+        :os_maj_version         => rrel,
+    } end 
+    context "supports operating system: #{os} rel #{rrel}" do
+      it { should contain_class('rpmfusion') }
     end
   end
 }

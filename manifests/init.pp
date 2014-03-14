@@ -51,46 +51,70 @@
 # Copyright 2013 Lee Boynton, Marcellus Siegburg
 #
 class rpmfusion (
-  $free         = 1,
-  $nonfree      = 0,
-  $with_version = true,
-  $repos        = [ '-','updates-released' ],
+  $repos        = [ 'free',
+                    'free-updates-released',
+                    'nonfree',
+                    'nonfree-updates-released', ],
   ) {
-    # RPMFusion requires EPEL to be installed
-    include epel
-    include rpmfusion::params
+  # also available:
+  #   debug source updates-released-debug
+  #   updates-testing update-testing-debug 
+   
+  # RPMFusion requires EPEL to be installed
+  class { 'epel' : }
 
-    $gpg_path = '/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion'
-    $gpg_module = 'puppet:///modules/rpmfusion/RPM-GPG-KEY-rpmfusion'
-
-    rpmfusion::repo { $repos:
-      free    => $free,
-      nonfree => $nonfree,
-    }
-      
-    file { "${gpg_path}-free-${params::type}-${params::version}":
-      ensure => present,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-      source => "${gpg_module}-free-${params::type}-${params::version}",
-    }
-
-    file { "${gpg_path}-nonfree-${params::type}-${params::version}":
-      ensure => present,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-      source => "${gpg_module}-nonfree-${params::type}-${params::version}",
-    }
-
-    epel::rpm_gpg_key { 'rpmfusion-free':
-      path => "${gpg_path}-free-${params::type}-${params::version}",
-    }
-
-    if ($nonfree) {
-      epel::rpm_gpg_key { 'rpmfusion-nonfree':
-        path => "${gpg_path}-nonfree-${params::type}-${params::version}",
+  if $::osfamily == 'RedHat' {
+    case $::operatingsystem {
+      'Fedora': {
+        $type = 'fedora'
+        $version = $::operatingsystemrelease ? {
+          /(?i-mx:1[1-9]|2[0-1])/ => $::operatingsystemrelease,
+          default => undef,
+        }
+      }
+      default : {
+        $type = 'el'
+        $version = $::os_maj_version
       }
     }
+  } else {
+    fail("Only $::osfamily RedHat supported ($::osfmily)")
+  }
+  if ! $version {
+    # limited by my available gpg keys in ../files
+    fail("Unspported  \$::operatingsystem-\$::os_maj_version ${::operatingsystem}-${::os_maj_version}")
+  }
+
+  $gpg_path = '/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion'
+  $gpg_module = 'puppet:///modules/rpmfusion/RPM-GPG-KEY-rpmfusion'
+
+  if 'nonfree' in $repos {
+    file { "${gpg_path}-nonfree-${type}-${version}":
+      ensure => present,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
+      source => "${gpg_module}-nonfree-${type}-${version}",
+    }
+    epel::rpm_gpg_key { 'rpmfusion-nonfree':
+      path => "${gpg_path}-nonfree-${type}-${version}",
+    }
+  }
+  
+  file { "${gpg_path}-free-${type}-${version}":
+    ensure => present,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => "${gpg_module}-free-${type}-${version}",
+  }
+
+  epel::rpm_gpg_key { 'rpmfusion-free':
+    path => "${gpg_path}-free-${type}-${version}",
+  }
+
+  rpmfusion::repo { $repos :
+    type    => $type,
+    version => $version,
+  }
 }
