@@ -6,4 +6,4 @@
 #
 forge "http://forge.puppetlabs.com"
 
-mod 'stahnma/epel'
+mod 'stahnma/epel', '>= 0.0.3'
