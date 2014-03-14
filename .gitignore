@@ -1,2 +1,6 @@
+*~
 pkg
 .vagrant*
+Puppetfile.lock
+.librarian
+.tmp
