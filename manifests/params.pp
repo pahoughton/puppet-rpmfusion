@@ -57,7 +57,7 @@ class rpmfusion::params {
 
   if ! $version {
     fail("No version for $::{operatingsystem}-${::osfamily}")
-  } else { 
+  } else {
     if  $version in $supported_gpg {
       fail("No GPG for $::{operatingsystem} ${version}.x found")
     }

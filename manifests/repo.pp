@@ -45,18 +45,18 @@
 # Copyright 2013 Lee Boynton, Marcellus Siegburg
 #
 define rpmfusion::repo (
-  $repo         = $name,
   $type,
   $version,
+  $repo         = $name,
   $architecture = $::architecture
   ) {
 
   $repo_id = "${repo}-${type}-${version}"
-  
-  if "nonfree" in $repo {
-    $gpg_path = "/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-nonfree-${type}-${ver}"
+
+  if 'nonfree' in $repo {
+    $gpg_path = "/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-nonfree-${type}-${version}"
   } else {
-    $gpg_path = "/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-${type}-${ver}"
+    $gpg_path = "/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-${type}-${version}"
   }
 
   $mirrors = "http://mirrors.rpmfusion.org/mirrorlist?arch=${architecture}"
@@ -68,5 +68,5 @@ define rpmfusion::repo (
     gpgkey     => "file://${gpg_path}",
     descr      => "RPM Fusion repo ${repo_id}",
   }
-  
+
 }

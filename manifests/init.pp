@@ -58,8 +58,8 @@ class rpmfusion (
   ) {
   # also available:
   #   debug source updates-released-debug
-  #   updates-testing update-testing-debug 
-   
+  #   updates-testing update-testing-debug
+
   # RPMFusion requires EPEL to be installed
   class { 'epel' : }
 
@@ -78,7 +78,7 @@ class rpmfusion (
       }
     }
   } else {
-    fail("Only $::osfamily RedHat supported ($::osfmily)")
+    fail("Only ::osfamily RedHat supported '${::osfmily}'")
   }
   if ! $version {
     # limited by my available gpg keys in ../files
@@ -100,7 +100,7 @@ class rpmfusion (
       path => "${gpg_path}-nonfree-${type}-${version}",
     }
   }
-  
+
   file { "${gpg_path}-free-${type}-${version}":
     ensure => present,
     owner  => 'root',
