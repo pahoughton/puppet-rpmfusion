@@ -7,7 +7,7 @@
 #
 # [*repo*]
 #
-#   The type of repo to use (e.g. *updates-released* )
+#   The type of repo to use (e.g. *updates* )
 #   *Optional* (defaults to $name)
 #
 # [*free*]

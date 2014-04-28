@@ -28,7 +28,7 @@
 #   This parameter defines which rpmfusion repositories to configure. Multiple
 #   repositories can be set up by specifying them as list. Possible values can
 #   be seen in the rpfusion::params class file.
-#   *Optional* (defaults to [ 'updates-released' ])
+#   *Optional* (defaults to [ 'updates' ])
 #
 # === Variables
 #
@@ -38,7 +38,7 @@
 #
 #  class { 'rpmfusion':
 #    nonfree => 1,
-#    repos   => [ '-', 'debug', 'updates-released', 'updates-testing' ]
+#    repos   => [ '-', 'debug', 'updates', 'updates-testing' ]
 #  }
 #
 # === Authors
@@ -52,12 +52,12 @@
 #
 class rpmfusion (
   $repos        = [ 'free',
-                    'free-updates-released',
+                    'free-updates',
                     'nonfree',
-                    'nonfree-updates-released', ],
+                    'nonfree-updates', ],
   ) {
   # also available:
-  #   debug source updates-released-debug
+  #   debug source updates-debug
   #   updates-testing update-testing-debug
 
   # RPMFusion requires EPEL to be installed
